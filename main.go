@@ -24,7 +24,7 @@ import (
 )
 
 // Version.
-var Version = "v1.0"
+var Version = "v1.1"
 
 func main() {
 	laddr := flag.String("http", ":8080", "host:port to listen on")
