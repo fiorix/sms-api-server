@@ -1,0 +1,26 @@
+{
+	"ImportPath": "github.com/fiorix/sms-api-server",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/fiorix/go-smpp/smpp",
+			"Rev": "fffa22c319010979164defd165d4ec3cfa5bdc38"
+		},
+		{
+			"ImportPath": "github.com/gorilla/handlers",
+			"Rev": "1467d04c2cea3563bfe156b7b0014864adce02b6"
+		},
+		{
+			"ImportPath": "golang.org/x/net/websocket",
+			"Rev": "b4e17d61b15679caf2335da776c614169a1b4643"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding",
+			"Rev": "0fe7e6856182a6ebfcf1e6a7aa90bead9a8e1bc0"
+		},
+		{
+			"ImportPath": "golang.org/x/text/transform",
+			"Rev": "0fe7e6856182a6ebfcf1e6a7aa90bead9a8e1bc0"
+		}
+	]
+}
