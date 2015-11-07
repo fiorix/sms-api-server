@@ -8,8 +8,6 @@ It supports sending delivery receipts via WebSockets or
 
 [![Build Status](https://secure.travis-ci.org/fiorix/sms-api-server.png)](https://travis-ci.org/fiorix/sms-api-server)
 
-[![GoDoc](https://godoc.org/github.com/fiorix/sms-api-server?status.svg)](https://godoc.org/github.com/fiorix/sms-api-server)
-
 ## Running
 
 Developers can build the source code and run. For everyone
