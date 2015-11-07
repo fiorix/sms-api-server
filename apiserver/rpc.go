@@ -31,7 +31,7 @@ func NewSM(tx *smpp.Transceiver, rs *rpc.Server) *SM {
 	return sm
 }
 
-// ShortMessage contains the arguments of RPC call to SM.Send.
+// ShortMessage contains the arguments of RPC call to SM.Submit.
 type ShortMessage struct {
 	Src      string `json:"src"`
 	Dst      string `json:"dst"`
@@ -40,7 +40,7 @@ type ShortMessage struct {
 	Register string `json:"register"`
 }
 
-// ShortMessageResp contains of RPC response from SM.Send.
+// ShortMessageResp contains of RPC response from SM.Submit.
 type ShortMessageResp struct {
 	MessageID string `json:"message_id"`
 }
