@@ -58,11 +58,11 @@ For special characters, try:
 
 ## WebSocket API
 
-This server provides a two websocket APIs:
+This server provides two websocket APIs:
 
 - One for sending messages and querying for message status
 - One for sending delivery receipts
 
-See `index.html` for details.
+See [index.html](./index.html) for details.
 
 Have fun!
