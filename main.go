@@ -78,8 +78,12 @@ func main() {
 	conn := api.Register(http.DefaultServeMux)
 	go func() {
 		for c := range conn {
-			log.Printf("SMPP connection status to %s: %s",
+			m := fmt.Sprintf("SMPP connection status to %s: %s",
 				*cliaddr, c.Status())
+			if err := c.Error(); err != nil {
+				m = fmt.Sprintf("%s (%v)", m, err)
+			}
+			log.Println(m)
 		}
 	}()
 	if *public != "" {
