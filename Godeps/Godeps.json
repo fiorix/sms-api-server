@@ -4,7 +4,7 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/fiorix/go-smpp/smpp",
-			"Rev": "fffa22c319010979164defd165d4ec3cfa5bdc38"
+			"Rev": "fd9d1d82d44a0335af46d3e4b08893a3035e0432"
 		},
 		{
 			"ImportPath": "github.com/gorilla/handlers",
@@ -12,7 +12,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/websocket",
-			"Rev": "b4e17d61b15679caf2335da776c614169a1b4643"
+			"Rev": "99ca920b6037ef77af8a11297150f7f0d8f4ef80"
 		},
 		{
 			"ImportPath": "golang.org/x/text/encoding",
