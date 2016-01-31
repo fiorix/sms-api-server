@@ -23,7 +23,7 @@ import (
 	"github.com/fiorix/sms-api-server/apiserver"
 )
 
-// Version.
+// Version of this server.
 var Version = "v1.1"
 
 func main() {
