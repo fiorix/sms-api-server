@@ -1,10 +1,23 @@
 {
 	"ImportPath": "github.com/fiorix/sms-api-server",
-	"GoVersion": "go1.5.1",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
 	"Deps": [
 		{
 			"ImportPath": "github.com/fiorix/go-smpp/smpp",
-			"Rev": "fd9d1d82d44a0335af46d3e4b08893a3035e0432"
+			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
+		},
+		{
+			"ImportPath": "github.com/fiorix/go-smpp/smpp/pdu",
+			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
+		},
+		{
+			"ImportPath": "github.com/fiorix/go-smpp/smpp/pdu/pdufield",
+			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
+		},
+		{
+			"ImportPath": "github.com/fiorix/go-smpp/smpp/pdu/pdutext",
+			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
 		},
 		{
 			"ImportPath": "github.com/gorilla/handlers",
@@ -12,10 +25,26 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/websocket",
-			"Rev": "99ca920b6037ef77af8a11297150f7f0d8f4ef80"
+			"Rev": "e45385e9b226f570b1f086bf287b25d3d4117776"
 		},
 		{
 			"ImportPath": "golang.org/x/text/encoding",
+			"Rev": "0fe7e6856182a6ebfcf1e6a7aa90bead9a8e1bc0"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding/charmap",
+			"Rev": "0fe7e6856182a6ebfcf1e6a7aa90bead9a8e1bc0"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding/internal",
+			"Rev": "0fe7e6856182a6ebfcf1e6a7aa90bead9a8e1bc0"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding/internal/identifier",
+			"Rev": "0fe7e6856182a6ebfcf1e6a7aa90bead9a8e1bc0"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding/unicode",
 			"Rev": "0fe7e6856182a6ebfcf1e6a7aa90bead9a8e1bc0"
 		},
 		{
