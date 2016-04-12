@@ -2,9 +2,6 @@
 	"ImportPath": "github.com/fiorix/sms-api-server",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v62",
-	"Packages": [
-		"./apiserver/"
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/fiorix/go-smpp/smpp",
@@ -23,8 +20,21 @@
 			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
 		},
 		{
-			"ImportPath": "github.com/fiorix/go-smpp/smpp/smpptest",
-			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
+			"ImportPath": "github.com/go-web/httplog",
+			"Rev": "580d0d49f0d3990a37bf9f11f7b14d4021c5d8fc"
+		},
+		{
+			"ImportPath": "github.com/go-web/httpmux",
+			"Rev": "b3bb6ae19f3987423d95a537c28252e9910bcad8"
+		},
+		{
+			"ImportPath": "github.com/julienschmidt/httprouter",
+			"Comment": "v1.1-1-g70708e4",
+			"Rev": "70708e46004c7bcb09b70e685a8b74a690135387"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "e45385e9b226f570b1f086bf287b25d3d4117776"
 		},
 		{
 			"ImportPath": "golang.org/x/net/websocket",

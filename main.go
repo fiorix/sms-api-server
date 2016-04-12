@@ -20,13 +20,13 @@ import (
 	_ "net/http/pprof"
 
 	"github.com/fiorix/go-smpp/smpp"
-	"github.com/gorilla/handlers"
+	"github.com/go-web/httplog"
 
 	"github.com/fiorix/sms-api-server/apiserver"
 )
 
 // Version of this server.
-var Version = "v1.2.1"
+var Version = "v1.2.2"
 
 type Opts struct {
 	ListenAddr        string
@@ -88,10 +88,13 @@ func main() {
 	}
 	mux := http.Handler(http.DefaultServeMux)
 	if o.Log {
-		if !o.LogTS {
-			log.SetFlags(0)
+		var l *log.Logger
+		if o.LogTS {
+			l = log.New(os.Stderr, "", log.LstdFlags)
+		} else {
+			l = log.New(os.Stderr, "", 0)
 		}
-		mux = handlers.LoggingHandler(os.Stderr, mux)
+		mux = httplog.ApacheCombinedFormat(l)(mux.ServeHTTP)
 	}
 	err := ListenAndServe(o, mux)
 	if err != nil {
