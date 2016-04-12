@@ -2,6 +2,10 @@
 	"ImportPath": "github.com/fiorix/sms-api-server",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v62",
+	"Packages": [
+		".",
+		"./apiserver/"
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/fiorix/go-smpp/smpp",
@@ -17,6 +21,10 @@
 		},
 		{
 			"ImportPath": "github.com/fiorix/go-smpp/smpp/pdu/pdutext",
+			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
+		},
+		{
+			"ImportPath": "github.com/fiorix/go-smpp/smpp/smpptest",
 			"Rev": "3f7937eafd71183615a8e7c7af8a76da7bfb91b1"
 		},
 		{
