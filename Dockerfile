@@ -1,4 +1,4 @@
-FROM golang:1.5.1
+FROM golang:1.6
 
 ADD . /go/src/github.com/fiorix/sms-api-server
 COPY index.html /pub/index.html
