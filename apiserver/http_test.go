@@ -175,7 +175,7 @@ func sseClient(serverURL string) (chan *serverSentEvent, error) {
 	if err != nil {
 		return nil, err
 	}
-	tp.Cmd("GET %s HTTP/1.1\r\n", u.Path)
+	tp.Cmd("GET %s HTTP/1.1\r\nHost: %s\r\n", u.Path, u.Host)
 	line, err := tp.ReadLine()
 	if err != nil {
 		tp.Close()
