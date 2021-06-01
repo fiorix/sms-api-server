@@ -116,9 +116,13 @@ var DefaultConfig = Config{
 	HandleMethodNotAllowed: true,
 }
 
-// New creates and initializes a new Handler using default settings.
-func New() *Handler {
+// New creates and initializes a new Handler using default settings
+// and the given options.
+func New(opts ...ConfigOption) *Handler {
 	c := DefaultConfig
+	for _, o := range opts {
+		o.Set(&c)
+	}
 	return NewHandler(&c)
 }
 

@@ -1,6 +1,7 @@
 # httpmux
 
 [![GoDoc](https://godoc.org/github.com/go-web/httpmux?status.svg)](http://godoc.org/github.com/go-web/httpmux)
+[![GoReportCard](https://goreportcard.com/badge/github.com/go-web/httpmux)](https://goreportcard.com/report/github.com/go-web/httpmux)
 
 httpmux is an http request multiplexer for [Go](https://golang.org) built
 on top of the popular [httprouter](https://github.com/julienschmidt/httprouter),

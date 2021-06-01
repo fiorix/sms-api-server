@@ -6,12 +6,16 @@
 package unicode // import "golang.org/x/text/encoding/unicode"
 
 import (
+	"bytes"
 	"errors"
 	"unicode/utf16"
 	"unicode/utf8"
 
 	"golang.org/x/text/encoding"
+	"golang.org/x/text/encoding/internal"
 	"golang.org/x/text/encoding/internal/identifier"
+	"golang.org/x/text/internal/utf8internal"
+	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 )
 
@@ -22,9 +26,182 @@ import (
 // the introduction of some kind of error type for conveying the erroneous code
 // point.
 
-// TODO:
-// - Define UTF-8 (mostly for BOM handling.)
-// - Define UTF-32?
+// UTF8 is the UTF-8 encoding. It neither removes nor adds byte order marks.
+var UTF8 encoding.Encoding = utf8enc
+
+// UTF8BOM is an UTF-8 encoding where the decoder strips a leading byte order
+// mark while the encoder adds one.
+//
+// Some editors add a byte order mark as a signature to UTF-8 files. Although
+// the byte order mark is not useful for detecting byte order in UTF-8, it is
+// sometimes used as a convention to mark UTF-8-encoded files. This relies on
+// the observation that the UTF-8 byte order mark is either an illegal or at
+// least very unlikely sequence in any other character encoding.
+var UTF8BOM encoding.Encoding = utf8bomEncoding{}
+
+type utf8bomEncoding struct{}
+
+func (utf8bomEncoding) String() string {
+	return "UTF-8-BOM"
+}
+
+func (utf8bomEncoding) ID() (identifier.MIB, string) {
+	return identifier.Unofficial, "x-utf8bom"
+}
+
+func (utf8bomEncoding) NewEncoder() *encoding.Encoder {
+	return &encoding.Encoder{
+		Transformer: &utf8bomEncoder{t: runes.ReplaceIllFormed()},
+	}
+}
+
+func (utf8bomEncoding) NewDecoder() *encoding.Decoder {
+	return &encoding.Decoder{Transformer: &utf8bomDecoder{}}
+}
+
+var utf8enc = &internal.Encoding{
+	&internal.SimpleEncoding{utf8Decoder{}, runes.ReplaceIllFormed()},
+	"UTF-8",
+	identifier.UTF8,
+}
+
+type utf8bomDecoder struct {
+	checked bool
+}
+
+func (t *utf8bomDecoder) Reset() {
+	t.checked = false
+}
+
+func (t *utf8bomDecoder) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
+	if !t.checked {
+		if !atEOF && len(src) < len(utf8BOM) {
+			if len(src) == 0 {
+				return 0, 0, nil
+			}
+			return 0, 0, transform.ErrShortSrc
+		}
+		if bytes.HasPrefix(src, []byte(utf8BOM)) {
+			nSrc += len(utf8BOM)
+			src = src[len(utf8BOM):]
+		}
+		t.checked = true
+	}
+	nDst, n, err := utf8Decoder.Transform(utf8Decoder{}, dst[nDst:], src, atEOF)
+	nSrc += n
+	return nDst, nSrc, err
+}
+
+type utf8bomEncoder struct {
+	written bool
+	t       transform.Transformer
+}
+
+func (t *utf8bomEncoder) Reset() {
+	t.written = false
+	t.t.Reset()
+}
+
+func (t *utf8bomEncoder) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
+	if !t.written {
+		if len(dst) < len(utf8BOM) {
+			return nDst, 0, transform.ErrShortDst
+		}
+		nDst = copy(dst, utf8BOM)
+		t.written = true
+	}
+	n, nSrc, err := utf8Decoder.Transform(utf8Decoder{}, dst[nDst:], src, atEOF)
+	nDst += n
+	return nDst, nSrc, err
+}
+
+type utf8Decoder struct{ transform.NopResetter }
+
+func (utf8Decoder) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
+	var pSrc int // point from which to start copy in src
+	var accept utf8internal.AcceptRange
+
+	// The decoder can only make the input larger, not smaller.
+	n := len(src)
+	if len(dst) < n {
+		err = transform.ErrShortDst
+		n = len(dst)
+		atEOF = false
+	}
+	for nSrc < n {
+		c := src[nSrc]
+		if c < utf8.RuneSelf {
+			nSrc++
+			continue
+		}
+		first := utf8internal.First[c]
+		size := int(first & utf8internal.SizeMask)
+		if first == utf8internal.FirstInvalid {
+			goto handleInvalid // invalid starter byte
+		}
+		accept = utf8internal.AcceptRanges[first>>utf8internal.AcceptShift]
+		if nSrc+size > n {
+			if !atEOF {
+				// We may stop earlier than necessary here if the short sequence
+				// has invalid bytes. Not checking for this simplifies the code
+				// and may avoid duplicate computations in certain conditions.
+				if err == nil {
+					err = transform.ErrShortSrc
+				}
+				break
+			}
+			// Determine the maximal subpart of an ill-formed subsequence.
+			switch {
+			case nSrc+1 >= n || src[nSrc+1] < accept.Lo || accept.Hi < src[nSrc+1]:
+				size = 1
+			case nSrc+2 >= n || src[nSrc+2] < utf8internal.LoCB || utf8internal.HiCB < src[nSrc+2]:
+				size = 2
+			default:
+				size = 3 // As we are short, the maximum is 3.
+			}
+			goto handleInvalid
+		}
+		if c = src[nSrc+1]; c < accept.Lo || accept.Hi < c {
+			size = 1
+			goto handleInvalid // invalid continuation byte
+		} else if size == 2 {
+		} else if c = src[nSrc+2]; c < utf8internal.LoCB || utf8internal.HiCB < c {
+			size = 2
+			goto handleInvalid // invalid continuation byte
+		} else if size == 3 {
+		} else if c = src[nSrc+3]; c < utf8internal.LoCB || utf8internal.HiCB < c {
+			size = 3
+			goto handleInvalid // invalid continuation byte
+		}
+		nSrc += size
+		continue
+
+	handleInvalid:
+		// Copy the scanned input so far.
+		nDst += copy(dst[nDst:], src[pSrc:nSrc])
+
+		// Append RuneError to the destination.
+		const runeError = "\ufffd"
+		if nDst+len(runeError) > len(dst) {
+			return nDst, nSrc, transform.ErrShortDst
+		}
+		nDst += copy(dst[nDst:], runeError)
+
+		// Skip the maximal subpart of an ill-formed subsequence according to
+		// the W3C standard way instead of the Go way. This Transform is
+		// probably the only place in the text repo where it is warranted.
+		nSrc += size
+		pSrc = nSrc
+
+		// Recompute the maximum source length.
+		if sz := len(dst) - nDst; sz < len(src)-nSrc {
+			err = transform.ErrShortDst
+			n = nSrc + sz
+			atEOF = false
+		}
+	}
+	return nDst + copy(dst[nDst:], src[pSrc:nSrc]), nSrc, err
+}
 
 // UTF16 returns a UTF-16 Encoding for the given default endianness and byte
 // order mark (BOM) policy.
@@ -49,7 +226,7 @@ import (
 // and consumed in a greater context that implies a certain endianness, use
 // IgnoreBOM. Otherwise, use ExpectBOM and always produce and consume a BOM.
 //
-// In the language of http://www.unicode.org/faq/utf_bom.html#bom10, IgnoreBOM
+// In the language of https://www.unicode.org/faq/utf_bom.html#bom10, IgnoreBOM
 // corresponds to "Where the precise type of the data stream is known... the
 // BOM should not be used" and ExpectBOM corresponds to "A particular
 // protocol... may require use of the BOM".
@@ -77,12 +254,11 @@ var mibValue = map[Endianness][numBOMValues]identifier.MIB{
 
 // All lists a configuration for each IANA-defined UTF-16 variant.
 var All = []encoding.Encoding{
+	UTF8,
 	UTF16(BigEndian, UseBOM),
 	UTF16(BigEndian, IgnoreBOM),
 	UTF16(LittleEndian, IgnoreBOM),
 }
-
-// TODO: also include UTF-8
 
 // BOMPolicy is a UTF-16 encoding's byte order mark policy.
 type BOMPolicy uint8
@@ -147,19 +323,19 @@ type config struct {
 	bomPolicy  BOMPolicy
 }
 
-func (u utf16Encoding) NewDecoder() transform.Transformer {
-	return &utf16Decoder{
+func (u utf16Encoding) NewDecoder() *encoding.Decoder {
+	return &encoding.Decoder{Transformer: &utf16Decoder{
 		initial: u.config,
 		current: u.config,
-	}
+	}}
 }
 
-func (u utf16Encoding) NewEncoder() transform.Transformer {
-	return &utf16Encoder{
+func (u utf16Encoding) NewEncoder() *encoding.Encoder {
+	return &encoding.Encoder{Transformer: &utf16Encoder{
 		endianness:       u.endianness,
 		initialBOMPolicy: u.bomPolicy,
 		currentBOMPolicy: u.bomPolicy,
-	}
+	}}
 }
 
 func (u utf16Encoding) ID() (mib identifier.MIB, other string) {
@@ -192,10 +368,13 @@ func (u *utf16Decoder) Reset() {
 }
 
 func (u *utf16Decoder) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
-	if u.current.bomPolicy&acceptBOM != 0 {
-		if len(src) < 2 {
-			return 0, 0, transform.ErrShortSrc
-		}
+	if len(src) < 2 && atEOF && u.current.bomPolicy&requireBOM != 0 {
+		return 0, 0, ErrMissingBOM
+	}
+	if len(src) == 0 {
+		return 0, 0, nil
+	}
+	if len(src) >= 2 && u.current.bomPolicy&acceptBOM != 0 {
 		switch {
 		case src[0] == 0xfe && src[1] == 0xff:
 			u.current.endianness = BigEndian
