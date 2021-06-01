@@ -1,0 +1,28 @@
+# github.com/fiorix/go-smpp v0.0.0-20160412142418-3f7937eafd71
+## explicit
+github.com/fiorix/go-smpp/smpp
+github.com/fiorix/go-smpp/smpp/pdu
+github.com/fiorix/go-smpp/smpp/pdu/pdufield
+github.com/fiorix/go-smpp/smpp/pdu/pdutext
+github.com/fiorix/go-smpp/smpp/smpptest
+# github.com/go-web/httplog v0.0.0-20160412232724-580d0d49f0d3
+## explicit
+github.com/go-web/httplog
+# github.com/go-web/httpmux v0.0.0-20160317023936-b3bb6ae19f39
+## explicit
+github.com/go-web/httpmux
+# github.com/julienschmidt/httprouter v1.1.1-0.20150625005531-70708e46004c
+## explicit
+github.com/julienschmidt/httprouter
+# golang.org/x/net v0.0.0-20160407034012-e45385e9b226
+## explicit
+golang.org/x/net/context
+golang.org/x/net/websocket
+# golang.org/x/text v0.0.0-20151019155523-0fe7e6856182
+## explicit
+golang.org/x/text/encoding
+golang.org/x/text/encoding/charmap
+golang.org/x/text/encoding/internal
+golang.org/x/text/encoding/internal/identifier
+golang.org/x/text/encoding/unicode
+golang.org/x/text/transform

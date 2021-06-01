@@ -1,0 +1,12 @@
+github.com/fiorix/go-smpp v0.0.0-20160412142418-3f7937eafd71 h1:Ko05M8jooGPtpxcdHUrY6+xHrEQLV1udYMDmQQWoAtw=
+github.com/fiorix/go-smpp v0.0.0-20160412142418-3f7937eafd71/go.mod h1:YXuspS5bGC2KqANvTbMlGpE+Vdd/nPoriK0pA4k3C4k=
+github.com/go-web/httplog v0.0.0-20160412232724-580d0d49f0d3 h1:KZvIaNsmd3r6MXTYy9KsoYMwJSJHpAqdgAsn9ccyW/0=
+github.com/go-web/httplog v0.0.0-20160412232724-580d0d49f0d3/go.mod h1:Da5v0brBuBCjAuI69AL1Van7esYkRXD8QexNXVPb1zc=
+github.com/go-web/httpmux v0.0.0-20160317023936-b3bb6ae19f39 h1:ID+ZBkMK4c7vabFuLjFQdVEPVRwVN429aY2SFmF1X2g=
+github.com/go-web/httpmux v0.0.0-20160317023936-b3bb6ae19f39/go.mod h1:gmmgB1VSDE+Z4B8DLF/71cw8me8RRHvtygKJkDjaDMA=
+github.com/julienschmidt/httprouter v1.1.1-0.20150625005531-70708e46004c h1:SB+L4gAqko9Cu3FogMjxA4rkPAKnlc5hpEzHvhLK3ao=
+github.com/julienschmidt/httprouter v1.1.1-0.20150625005531-70708e46004c/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
+golang.org/x/net v0.0.0-20160407034012-e45385e9b226 h1:EMuC4CwuQWfowtZoscVAkWBtuEL349j0hco+D13rjCw=
+golang.org/x/net v0.0.0-20160407034012-e45385e9b226/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
+golang.org/x/text v0.0.0-20151019155523-0fe7e6856182 h1:n6ttptA37WWG+Lq5SnYs7dIDARWwYtoA3Nc9foH1m6g=
+golang.org/x/text v0.0.0-20151019155523-0fe7e6856182/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=

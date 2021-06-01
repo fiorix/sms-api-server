@@ -22,7 +22,7 @@ import (
 	"github.com/fiorix/go-smpp/smpp"
 	"github.com/go-web/httplog"
 
-	"github.com/fiorix/sms-api-server/apiserver"
+	"github.com/engagespark/sms-api-server/apiserver"
 )
 
 // Version of this server.
