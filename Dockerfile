@@ -1,8 +1,12 @@
-FROM golang:1.6
+FROM golang:1.16 as builder
+WORKDIR /build
+COPY ./ ./
+RUN make build
 
-ADD . /go/src/github.com/fiorix/sms-api-server
-COPY index.html /pub/index.html
-RUN GO15VENDOREXPERIMENT=1 go install github.com/fiorix/sms-api-server
+FROM debian:stable-slim
+#RUN apt update && apt install -y ca-certificates
+COPY --from=0 /build/sms-api-server  /
+COPY --from=0 /build/index.html  /pub/index.html
 
 EXPOSE 8080
-ENTRYPOINT ["/go/bin/sms-api-server", "-public", "/pub"]
+ENTRYPOINT ["/sms-api-server", "-public", "/pub"]
