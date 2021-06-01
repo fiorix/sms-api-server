@@ -1,3 +1,6 @@
+This is a fork of https://github.com/fiorix/sms-api-server
+
+
 # HTTP API for sending SMS via SMPP
 
 The sms-api-server is a web server that connects to an SMSC via
