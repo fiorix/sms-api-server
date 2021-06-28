@@ -11,6 +11,7 @@ import (
 	"net/url"
 
 	"github.com/fiorix/go-smpp/smpp"
+	"github.com/fiorix/go-smpp/smpp/pdu/pdufield"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
 )
 
@@ -85,9 +86,9 @@ func (rpc *SM) submit(req url.Values) (resp *ShortMessageResp, status int, err e
 	}
 	switch register {
 	case "final":
-		sm.Register = smpp.FinalDeliveryReceipt
+		sm.Register = pdufield.FinalDeliveryReceipt
 	case "failure":
-		sm.Register = smpp.FailureDeliveryReceipt
+		sm.Register = pdufield.FailureDeliveryReceipt
 	}
 	sm, err = rpc.tx.Submit(sm)
 	if err == smpp.ErrNotConnected {
@@ -135,7 +136,8 @@ func (rpc *SM) query(req url.Values) (resp *QueryMessageResp, status int, err er
 	if err := f.Validate(req); err != nil {
 		return nil, http.StatusBadRequest, err
 	}
-	qr, err := rpc.tx.QuerySM(req.Get("src"), req.Get("message_id"))
+	// TODO: I don't know the source-addr-ton and source-addr-npi values
+	qr, err := rpc.tx.QuerySM(req.Get("src"), req.Get("message_id"), uint8(0), uint8(0))
 	if err == smpp.ErrNotConnected {
 		return nil, http.StatusServiceUnavailable, err
 	}
