@@ -15,9 +15,10 @@ import (
 // DeliveryReceipt contains the arguments of RPC call to SM.Deliver.
 // We only call it, not handle.
 type DeliveryReceipt struct {
-	Src  string `json:"src"`
-	Dst  string `json:"dst"`
-	Text string `json:"text"`
+	Src      string `json:"src"`
+	Dst      string `json:"dst"`
+	Text     string `json:"text"`
+	EMSClass uint8  `json:"emsclass"`
 }
 
 var deliveryID uint64
@@ -43,6 +44,9 @@ func (pool *deliveryPool) Handler(p pdu.Body) {
 			Src:  f[pdufield.SourceAddr].String(),
 			Dst:  f[pdufield.DestinationAddr].String(),
 			Text: f[pdufield.ShortMessage].String(),
+		}
+		if cl := f[pdufield.ESMClass].Bytes(); len(cl) > 0 {
+			dr.EMSClass = cl[0]
 		}
 		pool.Broadcast(dr)
 	}
