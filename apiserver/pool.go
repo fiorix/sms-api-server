@@ -5,6 +5,8 @@
 package apiserver
 
 import (
+	"encoding/hex"
+	"math/rand"
 	"sync"
 	"sync/atomic"
 
@@ -19,6 +21,8 @@ type DeliveryReceipt struct {
 	Dst      string `json:"dst"`
 	Text     string `json:"text"`
 	EMSClass uint8  `json:"emsclass"`
+	// random local ID to de-dup websocket messages
+	LocalID string `json:"localid"`
 }
 
 var deliveryID uint64
@@ -35,15 +39,17 @@ func newPool() *deliveryPool {
 }
 
 // Handler handles DeliverSM coming from a Transceiver SMPP connection.
-// It broadcasts received delivery receipt to all registered peers.
+// It broadcasts received messages and delivery receipt to all registered
+// peers.
 func (pool *deliveryPool) Handler(p pdu.Body) {
 	switch p.Header().ID {
 	case pdu.DeliverSMID:
 		f := p.Fields()
 		dr := &DeliveryReceipt{
-			Src:  f[pdufield.SourceAddr].String(),
-			Dst:  f[pdufield.DestinationAddr].String(),
-			Text: f[pdufield.ShortMessage].String(),
+			Src:     f[pdufield.SourceAddr].String(),
+			Dst:     f[pdufield.DestinationAddr].String(),
+			Text:    f[pdufield.ShortMessage].String(),
+			LocalID: randomID(),
 		}
 		if cl := f[pdufield.ESMClass].Bytes(); len(cl) > 0 {
 			dr.EMSClass = cl[0]
@@ -86,4 +92,12 @@ func (pool *deliveryPool) Broadcast(r *DeliveryReceipt) {
 		}
 	}
 	pool.mu.Unlock()
+}
+
+func randomID() string {
+	var m []byte
+	for i := 0; i < 12; i++ {
+		m = append(m, byte(rand.Int()))
+	}
+	return hex.EncodeToString(m)
 }

@@ -12,10 +12,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 
 	_ "net/http/pprof"
 
@@ -49,6 +51,8 @@ func main() {
 		fmt.Println("sms-api-server", Version)
 		os.Exit(0)
 	}
+	rand.Seed(time.Now().Unix())
+
 	tx := &smpp.Transceiver{
 		Addr:   o.SMPPAddr,
 		User:   os.Getenv("SMPP_USER"),
