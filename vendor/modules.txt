@@ -1,10 +1,14 @@
-# github.com/fiorix/go-smpp v0.0.0-20160412142418-3f7937eafd71
+# github.com/fiorix/go-smpp v0.0.0-20210403173735-2894b96e70ba
 ## explicit
-github.com/fiorix/go-smpp/smpp
-github.com/fiorix/go-smpp/smpp/pdu
-github.com/fiorix/go-smpp/smpp/pdu/pdufield
-github.com/fiorix/go-smpp/smpp/pdu/pdutext
-github.com/fiorix/go-smpp/smpp/smpptest
+# github.com/fiorix/go-smpp/v2 v2.0.0-20210507124410-a82a321cf1d8 => github.com/alicebob/go-smpp/v2 v2.0.0
+## explicit
+github.com/fiorix/go-smpp/v2/smpp
+github.com/fiorix/go-smpp/v2/smpp/encoding
+github.com/fiorix/go-smpp/v2/smpp/pdu
+github.com/fiorix/go-smpp/v2/smpp/pdu/pdufield
+github.com/fiorix/go-smpp/v2/smpp/pdu/pdutext
+github.com/fiorix/go-smpp/v2/smpp/pdu/pdutlv
+github.com/fiorix/go-smpp/v2/smpp/smpptest
 # github.com/go-web/httplog v0.0.0-20160412232724-580d0d49f0d3
 ## explicit
 github.com/go-web/httplog
@@ -27,3 +31,4 @@ golang.org/x/text/encoding/unicode
 golang.org/x/text/internal/utf8internal
 golang.org/x/text/runes
 golang.org/x/text/transform
+# github.com/fiorix/go-smpp/v2 => github.com/alicebob/go-smpp/v2 v2.0.0

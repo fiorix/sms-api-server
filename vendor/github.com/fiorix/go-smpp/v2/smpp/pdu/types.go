@@ -4,7 +4,10 @@
 
 package pdu
 
-import "github.com/fiorix/go-smpp/smpp/pdu/pdufield"
+import (
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdufield"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdutlv"
+)
 
 // PDU Types.
 const (
@@ -194,9 +197,12 @@ func newSubmitSM(hdr *Header) *codec {
 }
 
 // NewSubmitSM creates and initializes a new SubmitSM PDU.
-func NewSubmitSM() Body {
+func NewSubmitSM(fields pdutlv.Fields) Body {
 	b := newSubmitSM(&Header{ID: SubmitSMID})
 	b.init()
+	for tag, value := range fields {
+		b.t.Set(tag, value)
+	}
 	return b
 }
 
@@ -215,6 +221,65 @@ func newSubmitSMResp(hdr *Header) *codec {
 // NewSubmitSMResp creates and initializes a new SubmitSMResp PDU.
 func NewSubmitSMResp() Body {
 	b := newSubmitSMResp(&Header{ID: SubmitSMRespID})
+	b.init()
+	return b
+}
+
+// SubmitMulti PDU.
+type SubmitMulti struct{ *codec }
+
+func newSubmitMulti(hdr *Header) *codec {
+	return &codec{
+		h: hdr,
+		l: pdufield.List{
+			pdufield.ServiceType,
+			pdufield.SourceAddrTON,
+			pdufield.SourceAddrNPI,
+			pdufield.SourceAddr,
+			pdufield.NumberDests,
+			pdufield.DestinationList, // contains DestFlag, DestAddrTON and DestAddrNPI for each address
+			pdufield.ESMClass,
+			pdufield.ProtocolID,
+			pdufield.PriorityFlag,
+			pdufield.ScheduleDeliveryTime,
+			pdufield.ValidityPeriod,
+			pdufield.RegisteredDelivery,
+			pdufield.ReplaceIfPresentFlag,
+			pdufield.DataCoding,
+			pdufield.SMDefaultMsgID,
+			pdufield.SMLength,
+			pdufield.ShortMessage,
+		},
+	}
+}
+
+// NewSubmitMulti creates and initializes a new SubmitMulti PDU.
+func NewSubmitMulti(fields pdutlv.Fields) Body {
+	b := newSubmitMulti(&Header{ID: SubmitMultiID})
+	b.init()
+	for tag, value := range fields {
+		b.t.Set(tag, value)
+	}
+	return b
+}
+
+// SubmitMultiResp PDU.
+type SubmitMultiResp struct{ *codec }
+
+func newSubmitMultiResp(hdr *Header) *codec {
+	return &codec{
+		h: hdr,
+		l: pdufield.List{
+			pdufield.MessageID,
+			pdufield.NoUnsuccess,
+			pdufield.UnsuccessSme,
+		},
+	}
+}
+
+// NewSubmitMultiResp creates and initializes a new SubmitMultiResp PDU.
+func NewSubmitMultiResp() Body {
+	b := newSubmitMultiResp(&Header{ID: SubmitMultiRespID})
 	b.init()
 	return b
 }
@@ -274,6 +339,13 @@ func NewDeliverSMResp() Body {
 	return b
 }
 
+// NewDeliverSMRespSeq creates and initializes a new DeliverSMResp PDU for a specific seq.
+func NewDeliverSMRespSeq(seq uint32) Body {
+	b := newDeliverSMResp(&Header{ID: DeliverSMRespID, Seq: seq})
+	b.init()
+	return b
+}
+
 // Unbind PDU.
 type Unbind struct{ *codec }
 
@@ -326,6 +398,13 @@ func newEnquireLinkResp(hdr *Header) *codec {
 // NewEnquireLinkResp creates and initializes a EnquireLinkResp PDU.
 func NewEnquireLinkResp() Body {
 	b := newEnquireLinkResp(&Header{ID: EnquireLinkRespID})
+	b.init()
+	return b
+}
+
+// NewEnquireLinkRespSeq creates and initializes a EnquireLinkResp PDU for a specific seq.
+func NewEnquireLinkRespSeq(seq uint32) Body {
+	b := newEnquireLinkResp(&Header{ID: EnquireLinkRespID, Seq: seq})
 	b.init()
 	return b
 }

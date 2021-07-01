@@ -11,8 +11,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/fiorix/go-smpp/smpp/pdu"
-	"github.com/fiorix/go-smpp/smpp/pdu/pdufield"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdufield"
 )
 
 // DeliveryReceipt contains the arguments of RPC call to SM.Deliver.
@@ -43,6 +43,7 @@ func newPool() *deliveryPool {
 // It broadcasts received messages and delivery receipt to all registered
 // peers.
 func (pool *deliveryPool) Handler(p pdu.Body) {
+	log.Printf("incoming message: %s", p.Header().ID)
 	switch p.Header().ID {
 	case pdu.DeliverSMID:
 		f := p.Fields()
@@ -57,7 +58,6 @@ func (pool *deliveryPool) Handler(p pdu.Body) {
 		}
 		pool.Broadcast(dr)
 	default:
-		log.Printf("unhandled message: %T %#v", p, p)
 	}
 }
 

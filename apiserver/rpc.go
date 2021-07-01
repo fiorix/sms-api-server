@@ -10,8 +10,9 @@ import (
 	"net/rpc"
 	"net/url"
 
-	"github.com/fiorix/go-smpp/smpp"
-	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
+	"github.com/fiorix/go-smpp/v2/smpp"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdufield"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdutext"
 )
 
 // SM export its public methods to JSON RPC.
@@ -85,9 +86,9 @@ func (rpc *SM) submit(req url.Values) (resp *ShortMessageResp, status int, err e
 	}
 	switch register {
 	case "final":
-		sm.Register = smpp.FinalDeliveryReceipt
+		sm.Register = pdufield.FinalDeliveryReceipt
 	case "failure":
-		sm.Register = smpp.FailureDeliveryReceipt
+		sm.Register = pdufield.FailureDeliveryReceipt
 	}
 	sm, err = rpc.tx.Submit(sm)
 	if err == smpp.ErrNotConnected {
@@ -135,7 +136,7 @@ func (rpc *SM) query(req url.Values) (resp *QueryMessageResp, status int, err er
 	if err := f.Validate(req); err != nil {
 		return nil, http.StatusBadRequest, err
 	}
-	qr, err := rpc.tx.QuerySM(req.Get("src"), req.Get("message_id"))
+	qr, err := rpc.tx.QuerySM(req.Get("src"), req.Get("message_id"), 0, 0)
 	if err == smpp.ErrNotConnected {
 		return nil, http.StatusServiceUnavailable, err
 	}

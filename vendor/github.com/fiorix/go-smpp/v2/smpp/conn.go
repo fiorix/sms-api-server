@@ -13,7 +13,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/fiorix/go-smpp/smpp/pdu"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu"
 )
 
 var (
@@ -23,6 +23,9 @@ var (
 	// ErrNotBound is returned on attempts to use a Transmitter,
 	// Receiver or Transceiver before calling Bind.
 	ErrNotBound = errors.New("not bound")
+
+	// ErrTimeout is returned when we've reached timeout while waiting for response.
+	ErrTimeout = errors.New("timeout waiting for response")
 )
 
 // Conn is an SMPP connection.

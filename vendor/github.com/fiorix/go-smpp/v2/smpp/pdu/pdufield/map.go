@@ -7,7 +7,7 @@ package pdufield
 import (
 	"fmt"
 
-	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdutext"
 )
 
 // Map is a collection of PDU field data indexed by name.
@@ -32,6 +32,8 @@ func (m Map) Set(k Name, v interface{}) error {
 		m[k] = New(k, []byte(v.(string)))
 	case []byte:
 		m[k] = New(k, []byte(v.([]byte)))
+	case DeliverySetting:
+		m[k] = New(k, []byte{uint8(v.(DeliverySetting))})
 	case Body:
 		m[k] = v.(Body)
 	case pdutext.Codec:
@@ -48,6 +50,3 @@ func (m Map) Set(k Name, v interface{}) error {
 	}
 	return nil
 }
-
-// TLVMap is a collection of PDU TLV field data indexed by type.
-type TLVMap map[TLVType]*TLVBody

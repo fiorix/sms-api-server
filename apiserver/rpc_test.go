@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fiorix/go-smpp/smpp"
+	"github.com/fiorix/go-smpp/v2/smpp"
 )
 
 func TestSM_Submit_BadRequest(t *testing.T) {
