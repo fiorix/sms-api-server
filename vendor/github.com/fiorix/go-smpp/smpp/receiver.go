@@ -7,6 +7,7 @@ package smpp
 import (
 	"crypto/tls"
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -73,18 +74,27 @@ func (r *Receiver) bindFunc(c Conn) error {
 			resp.Header().ID)
 	}
 	if r.Handler != nil {
-		go r.handlePDU()
+		go r.handlePDU(c)
 	}
 	return nil
 }
 
-func (r *Receiver) handlePDU() {
+// w is used to send back Acks.
+func (r *Receiver) handlePDU(w Writer) {
 	for {
-		pdu, err := r.conn.Read()
+		body, err := r.conn.Read()
 		if err != nil {
 			break
 		}
-		r.Handler(pdu)
+		r.Handler(body)
+		switch body.Header().ID {
+		case pdu.DeliverSMID:
+			resp := pdu.NewDeliverSMResp()
+			resp.Header().Seq = body.Header().Seq
+			w.Write(resp)
+		default:
+			log.Printf("unhandled reply: %T %#v", body, body)
+		}
 	}
 }
 

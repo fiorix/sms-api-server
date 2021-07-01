@@ -6,6 +6,7 @@ package apiserver
 
 import (
 	"encoding/hex"
+	"log"
 	"math/rand"
 	"sync"
 	"sync/atomic"
@@ -55,6 +56,8 @@ func (pool *deliveryPool) Handler(p pdu.Body) {
 			dr.EMSClass = cl[0]
 		}
 		pool.Broadcast(dr)
+	default:
+		log.Printf("unhandled message: %T %#v", p, p)
 	}
 }
 
