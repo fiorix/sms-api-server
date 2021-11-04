@@ -64,7 +64,9 @@ func (rpc *SM) Submit(args *ShortMessage, resp *ShortMessageResp) error {
 }
 
 func (rpc *SM) submit(req url.Values) (resp *ShortMessageResp, status int, err error) {
-	sm := &smpp.ShortMessage{}
+	sm := &smpp.ShortMessage{
+		SourceAddrTON: 5, // instructions from vodacom
+	}
 	var msg, enc, register string
 	f := form{
 		{"src", "number of sender", false, nil, &sm.Src},
