@@ -26,7 +26,7 @@ import (
 )
 
 // Version of this server.
-var Version = "v1.3.0"
+var Version = "v1.3.1"
 
 type Opts struct {
 	ListenAddr        string
