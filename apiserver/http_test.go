@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fiorix/go-smpp/smpp"
+	"github.com/fiorix/go-smpp/v2/smpp"
 	"golang.org/x/net/websocket"
 )
 

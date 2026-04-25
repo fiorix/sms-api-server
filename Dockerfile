@@ -1,8 +1,13 @@
-FROM golang:1.6
+FROM golang:1.25-alpine AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o /out/sms-api-server .
 
-ADD . /go/src/github.com/fiorix/sms-api-server
+FROM alpine:3.20
+RUN apk add --no-cache ca-certificates
+COPY --from=build /out/sms-api-server /usr/local/bin/sms-api-server
 COPY index.html /pub/index.html
-RUN GO15VENDOREXPERIMENT=1 go install github.com/fiorix/sms-api-server
-
 EXPOSE 8080
-ENTRYPOINT ["/go/bin/sms-api-server", "-public", "/pub"]
+ENTRYPOINT ["/usr/local/bin/sms-api-server", "-public", "/pub"]

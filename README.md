@@ -6,7 +6,7 @@ messages and querying their status (when supported by the SMSC).
 It supports sending delivery receipts via WebSockets or
 [Server-Sent Events](http://www.w3schools.com/html/html5_serversentevents.asp).
 
-[![Build Status](https://secure.travis-ci.org/fiorix/sms-api-server.png)](https://travis-ci.org/fiorix/sms-api-server)
+[![ci](https://github.com/fiorix/sms-api-server/actions/workflows/ci.yml/badge.svg)](https://github.com/fiorix/sms-api-server/actions/workflows/ci.yml)
 
 ## Running
 
@@ -44,6 +44,8 @@ as events, as they arrive on the server.
 The `/v1/send` endpoint supports the following parameters:
 
 - src: number of sender (optional)
+- src_ton: source address type of number, uint8 (optional, default 0)
+- src_npi: source address numbering plan indicator, uint8 (optional, default 0)
 - dst: number of recipient
 - text: text message, encoded as UTF-8
 - enc: text encoding for short message: `latin1` or `ucs2` (optional)
@@ -55,6 +57,15 @@ not display correctly on some devices.
 For special characters, try:
 
 	curl localhost:8080/v1/send -X POST -F dst=foobar -F enc=ucs2 -F text="é nóis"
+
+## Query parameters
+
+The `/v1/query` endpoint supports the following parameters:
+
+- src: number of sender (optional)
+- src_ton: source address type of number, uint8 (optional, default 0)
+- src_npi: source address numbering plan indicator, uint8 (optional, default 0)
+- message_id: message id returned by `/v1/send`
 
 ## WebSocket API
 

@@ -9,10 +9,24 @@ import (
 	"net/http"
 	"net/rpc"
 	"net/url"
+	"strconv"
 
-	"github.com/fiorix/go-smpp/smpp"
-	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
+	"github.com/fiorix/go-smpp/v2/smpp"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdufield"
+	"github.com/fiorix/go-smpp/v2/smpp/pdu/pdutext"
 )
+
+// parseUint8 parses a form value as uint8. Empty string returns 0.
+func parseUint8(name, v string) (uint8, error) {
+	if v == "" {
+		return 0, nil
+	}
+	n, err := strconv.ParseUint(v, 10, 8)
+	if err != nil {
+		return 0, fmt.Errorf("invalid parameter %q=%q: %v", name, v, err)
+	}
+	return uint8(n), nil
+}
 
 // SM export its public methods to JSON RPC.
 type SM struct {
@@ -34,6 +48,8 @@ func NewSM(tx *smpp.Transceiver, rs *rpc.Server) *SM {
 // ShortMessage contains the arguments of RPC call to SM.Submit.
 type ShortMessage struct {
 	Src      string `json:"src"`
+	SrcTON   uint8  `json:"src_ton"`
+	SrcNPI   uint8  `json:"src_npi"`
 	Dst      string `json:"dst"`
 	Text     string `json:"text"`
 	Enc      string `json:"enc"`
@@ -49,6 +65,8 @@ type ShortMessageResp struct {
 func (rpc *SM) Submit(args *ShortMessage, resp *ShortMessageResp) error {
 	req := url.Values{
 		"src":      {args.Src},
+		"src_ton":  {strconv.FormatUint(uint64(args.SrcTON), 10)},
+		"src_npi":  {strconv.FormatUint(uint64(args.SrcNPI), 10)},
 		"dst":      {args.Dst},
 		"text":     {args.Text},
 		"enc":      {args.Enc},
@@ -64,15 +82,23 @@ func (rpc *SM) Submit(args *ShortMessage, resp *ShortMessageResp) error {
 
 func (rpc *SM) submit(req url.Values) (resp *ShortMessageResp, status int, err error) {
 	sm := &smpp.ShortMessage{}
-	var msg, enc, register string
+	var msg, enc, register, srcTON, srcNPI string
 	f := form{
 		{"src", "number of sender", false, nil, &sm.Src},
+		{"src_ton", "type of number of sender", false, nil, &srcTON},
+		{"src_npi", "numbering plan indicator of sender", false, nil, &srcNPI},
 		{"dst", "number of recipient", true, nil, &sm.Dst},
 		{"text", "text message", true, nil, &msg},
 		{"enc", "text encoding", false, []string{"latin1", "ucs2"}, &enc},
 		{"register", "registered delivery", false, []string{"final", "failure"}, &register},
 	}
 	if err := f.Validate(req); err != nil {
+		return nil, http.StatusBadRequest, err
+	}
+	if sm.SourceAddrTON, err = parseUint8("src_ton", srcTON); err != nil {
+		return nil, http.StatusBadRequest, err
+	}
+	if sm.SourceAddrNPI, err = parseUint8("src_npi", srcNPI); err != nil {
 		return nil, http.StatusBadRequest, err
 	}
 	switch enc {
@@ -85,9 +111,9 @@ func (rpc *SM) submit(req url.Values) (resp *ShortMessageResp, status int, err e
 	}
 	switch register {
 	case "final":
-		sm.Register = smpp.FinalDeliveryReceipt
+		sm.Register = pdufield.FinalDeliveryReceipt
 	case "failure":
-		sm.Register = smpp.FailureDeliveryReceipt
+		sm.Register = pdufield.FailureDeliveryReceipt
 	}
 	sm, err = rpc.tx.Submit(sm)
 	if err == smpp.ErrNotConnected {
@@ -103,6 +129,8 @@ func (rpc *SM) submit(req url.Values) (resp *ShortMessageResp, status int, err e
 // QueryMessage contains the arguments of RPC call to SM.Query.
 type QueryMessage struct {
 	Src       string `json:"src"`
+	SrcTON    uint8  `json:"src_ton"`
+	SrcNPI    uint8  `json:"src_npi"`
 	MessageID string `json:"message_id"`
 }
 
@@ -117,6 +145,8 @@ type QueryMessageResp struct {
 func (rpc *SM) Query(args *QueryMessage, resp *QueryMessageResp) error {
 	req := url.Values{
 		"src":        {args.Src},
+		"src_ton":    {strconv.FormatUint(uint64(args.SrcTON), 10)},
+		"src_npi":    {strconv.FormatUint(uint64(args.SrcNPI), 10)},
 		"message_id": {args.MessageID},
 	}
 	r, s, err := rpc.query(req)
@@ -128,14 +158,25 @@ func (rpc *SM) Query(args *QueryMessage, resp *QueryMessageResp) error {
 }
 
 func (rpc *SM) query(req url.Values) (resp *QueryMessageResp, status int, err error) {
+	var srcTON, srcNPI string
 	f := form{
 		{"src", "number of sender", false, nil, nil},
+		{"src_ton", "type of number of sender", false, nil, &srcTON},
+		{"src_npi", "numbering plan indicator of sender", false, nil, &srcNPI},
 		{"message_id", "message id from send", true, nil, nil},
 	}
 	if err := f.Validate(req); err != nil {
 		return nil, http.StatusBadRequest, err
 	}
-	qr, err := rpc.tx.QuerySM(req.Get("src"), req.Get("message_id"))
+	ton, err := parseUint8("src_ton", srcTON)
+	if err != nil {
+		return nil, http.StatusBadRequest, err
+	}
+	npi, err := parseUint8("src_npi", srcNPI)
+	if err != nil {
+		return nil, http.StatusBadRequest, err
+	}
+	qr, err := rpc.tx.QuerySM(req.Get("src"), req.Get("message_id"), ton, npi)
 	if err == smpp.ErrNotConnected {
 		return nil, http.StatusServiceUnavailable, err
 	}

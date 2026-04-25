@@ -1,0 +1,14 @@
+github.com/fiorix/go-smpp/v2 v2.0.0 h1:MIdtqACksg0ZKTImH81jV2NLriHH3PvrrB73nq1M+mw=
+github.com/fiorix/go-smpp/v2 v2.0.0/go.mod h1:aS0N8HVU1giJCPlXLpdomxLLylzb0zzIyESUEbSB+zc=
+github.com/go-web/httplog v1.0.0 h1:E0xofq137LKMLF96LztSWnu6s3Tis+Zp/fGu49YFKcY=
+github.com/go-web/httplog v1.0.0/go.mod h1:cnQnbJf3dEHwcNt86cn4p/m8iSvy6bNALc6nidfGB2k=
+github.com/go-web/httpmux v1.0.0 h1:NRsEYSmqt/0mQSQD8lkLVyBQKrCBrbb1zbC6ZIYsbxg=
+github.com/go-web/httpmux v1.0.0/go.mod h1:ThspVTVnAHM2LqnL8zq3+P7WjOhZvICwByAepVbLJ2U=
+github.com/julienschmidt/httprouter v1.3.0 h1:U0609e9tgbseu3rBINet9P48AI/D3oJs4dN7jwJOQ1U=
+github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=
+golang.org/x/net v0.45.0 h1:RLBg5JKixCy82FtLJpeNlVM0nrSqpCRYzVU1n8kj0tM=
+golang.org/x/net v0.45.0/go.mod h1:ECOoLqd5U3Lhyeyo/QDCEVQ4sNgYsqvCZ722XogGieY=
+golang.org/x/text v0.36.0 h1:JfKh3XmcRPqZPKevfXVpI1wXPTqbkE5f7JA92a55Yxg=
+golang.org/x/text v0.36.0/go.mod h1:NIdBknypM8iqVmPiuco0Dh6P5Jcdk8lJL0CUebqK164=
+golang.org/x/time v0.15.0 h1:bbrp8t3bGUeFOx08pvsMYRTCVSMk89u4tKbNOZbp88U=
+golang.org/x/time v0.15.0/go.mod h1:Y4YMaQmXwGQZoFaVFk4YpCt4FLQMYKZe9oeV/f4MSno=

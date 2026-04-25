@@ -19,7 +19,7 @@ import (
 
 	_ "net/http/pprof"
 
-	"github.com/fiorix/go-smpp/smpp"
+	"github.com/fiorix/go-smpp/v2/smpp"
 	"github.com/go-web/httplog"
 
 	"github.com/fiorix/sms-api-server/apiserver"
