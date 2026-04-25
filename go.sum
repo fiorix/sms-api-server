@@ -1,5 +1,5 @@
-github.com/fiorix/go-smpp/v2 v2.0.0 h1:MIdtqACksg0ZKTImH81jV2NLriHH3PvrrB73nq1M+mw=
-github.com/fiorix/go-smpp/v2 v2.0.0/go.mod h1:aS0N8HVU1giJCPlXLpdomxLLylzb0zzIyESUEbSB+zc=
+github.com/fiorix/go-smpp/v2 v2.1.0 h1:3A7mpvHTJBXBSv03NwEiknqslHW6zaPkY9SXBiaFbP4=
+github.com/fiorix/go-smpp/v2 v2.1.0/go.mod h1:aS0N8HVU1giJCPlXLpdomxLLylzb0zzIyESUEbSB+zc=
 github.com/go-web/httplog v1.0.0 h1:E0xofq137LKMLF96LztSWnu6s3Tis+Zp/fGu49YFKcY=
 github.com/go-web/httplog v1.0.0/go.mod h1:cnQnbJf3dEHwcNt86cn4p/m8iSvy6bNALc6nidfGB2k=
 github.com/go-web/httpmux v1.0.0 h1:NRsEYSmqt/0mQSQD8lkLVyBQKrCBrbb1zbC6ZIYsbxg=
